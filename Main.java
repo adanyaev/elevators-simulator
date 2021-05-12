@@ -2,7 +2,6 @@ package com.company;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.concurrent.Exchanger;
 
 enum elevator_status{
     WAITING("WAITING"),
@@ -35,9 +34,10 @@ class Request{
 }
 
 public class Main {
+    static int requests_frequency = 8; // заявки генерируются рандомно один раз в от 1 до requests_frequency секунд
     static int num_floors = 10;
     static int num_elevators = 3;
-    static int seconds_between_floors = 3;
+    static int seconds_between_floors = 2;
     static int max_persons = 4;
 
     public static void cls() {
@@ -48,32 +48,36 @@ public class Main {
         }
     }
 
-    static void consoleWriter(ArrayList<Elevator> elevators) throws InterruptedException, IOException {
-
-        while (true){
-            cls();
-            for (int i = 0; i < elevators.size(); i++){
-                System.out.println("Elevator # " + (i+1));
-                System.out.println("Elevator status: " + elevators.get(i).current_status.getString());
-                System.out.println("Current floor: " + elevators.get(i).current_floor + '\n');
-                System.out.println("Waiting persons: ");
-                for (int j = 0; j < elevators.get(i).requestsWaiting.size(); j++){
-                    System.out.println("Person id: " + elevators.get(i).requestsWaiting.get(j).id +
-                                    " Start: " + elevators.get(i).requestsWaiting.get(j).start +
-                            " Target: " + elevators.get(i).requestsWaiting.get(j).target + "   ");
+    static void consoleWriter(ArrayList<Elevator> elevators) {
+        try {
+            while (true) {
+                cls();
+                for (int i = 0; i < elevators.size(); i++) {
+                    System.out.println("Elevator # " + (i + 1));
+                    System.out.println("Elevator status: " + elevators.get(i).current_status.getString());
+                    System.out.println("Current floor: " + elevators.get(i).current_floor + '\n');
+                    System.out.println("Waiting persons: ");
+                    for (int j = 0; j < elevators.get(i).requestsWaiting.size(); j++) {
+                        System.out.println("Person id: " + elevators.get(i).requestsWaiting.get(j).id +
+                                " Start: " + elevators.get(i).requestsWaiting.get(j).start +
+                                " Target: " + elevators.get(i).requestsWaiting.get(j).target + "   ");
+                    }
+                    System.out.println("Running persons: ");
+                    for (int j = 0; j < elevators.get(i).requestsRunning.size(); j++) {
+                        System.out.println("Person id: " + elevators.get(i).requestsRunning.get(j).id +
+                                " Start: " + elevators.get(i).requestsRunning.get(j).start +
+                                " Target: " + elevators.get(i).requestsRunning.get(j).target + "   ");
+                    }
+                    System.out.println("\n");
                 }
-                System.out.println("Running persons: ");
-                for (int j = 0; j < elevators.get(i).requestsRunning.size(); j++){
-                    System.out.println("Person id: " + elevators.get(i).requestsRunning.get(j).id +
-                            " Start: " + elevators.get(i).requestsRunning.get(j).start +
-                            " Target: " + elevators.get(i).requestsRunning.get(j).target + "   ");
-                }
-                System.out.println("\n\n");
+                Thread.sleep(100);
             }
-            Thread.sleep(50);
+        } catch (InterruptedException e){
+            e.printStackTrace();
         }
     }
-    public static void main(String[] args) throws InterruptedException, IOException {
+
+    public static void main(String[] args) {
         ArrayList<Elevator> elevators = new ArrayList<Elevator> ();
 	    for (int i = 0; i < num_elevators; i++){
 	        elevators.add(new Elevator());

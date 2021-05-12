@@ -27,20 +27,29 @@ public class ElevatorsManager implements Runnable{
                 Request r = new Request(dir, start, id_counter);
                 id_counter++;
                 int min_dist = Main.num_floors +1;
-                int elev_index = 0;
+                int elev_index = -1;
+                int min_dist_waiting = Main.num_floors +1;
+                int elev_index_waiting = -1;
                 for (int i = 0; i < elevators.size(); i++){
                     int dist = Math.abs(r.start - elevators.get(i).current_floor);
                     if (dist < min_dist){
                         min_dist = dist;
                         elev_index = i;
                     }
+                    if (elevators.get(i).current_status == elevator_status.WAITING && dist < min_dist_waiting){
+                        min_dist_waiting = dist;
+                        elev_index_waiting = i;
+                    }
                 }
-                elevators.get(elev_index).newRequest(r);
-                Thread.sleep((random.nextInt(5)+4)*1000);
+                if (elev_index_waiting != -1){
+                    elevators.get(elev_index_waiting).newRequest(r);
+                } else {
+                    elevators.get(elev_index).newRequest(r);
+                }
+                Thread.sleep((random.nextInt(Main.requests_frequency-1)+1)*1000);
             }
         } catch (InterruptedException e){
             e.printStackTrace();
         }
     }
-
 }

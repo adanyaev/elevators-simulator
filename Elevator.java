@@ -10,6 +10,7 @@ public class Elevator implements Runnable {
     ArrayList<Request> requestsWaiting = new ArrayList<Request>();
     ArrayList<Request> requestsRunning = new ArrayList<Request>();
     int current_floor = 0;
+
     public void newRequest(Request r){
         Random random = new Random();
         if (r.dir == direction.UP){
@@ -29,6 +30,7 @@ public class Elevator implements Runnable {
             requestsWaiting.add(r);
         }
     }
+
     public void run(){
         try {
             while (true) {
@@ -93,7 +95,5 @@ public class Elevator implements Runnable {
         } catch (InterruptedException e){
             e.printStackTrace();
         }
-
     }
-
 }
